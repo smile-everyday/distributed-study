@@ -14,7 +14,7 @@ public class RpcRegistryCenterImpl implements IRpcRegistryCenter {
     private static final String SEPARATOR = "/";
 
     /**
-     * 服务注册，将接口名称和服务的地址以临时节点的方式注册到zookeeper中，
+     * 服务注册，将服务的地址以临时节点的方式注册到zookeeper中，
      * 这样断开连接即销毁服务，而有新服务加入时，客户端通过监听器动态发现
      * 服务变化
      *
@@ -30,10 +30,10 @@ public class RpcRegistryCenterImpl implements IRpcRegistryCenter {
         String serviceNode = SEPARATOR + serviceName;
 
         CuratorFramework connector = ZkConnectUtils.getConnector();
-        // 判断该服务节点是否已经创建，没有就创建临时的服务节点
+        // 判断该服务节点是否已经创建，服务名称最好不要以临时节点的方式创建，否则一旦该连接断开，整个集群都将不可用。
         if (connector.checkExists().forPath(serviceNode) == null) {
             connector.create().creatingParentsIfNeeded()
-                    .withMode(CreateMode.EPHEMERAL)
+                    .withMode(CreateMode.PERSISTENT)
                     .forPath(serviceNode, "0".getBytes());
         }
 

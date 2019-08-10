@@ -18,7 +18,7 @@ public class MainClass {
                 try {
                     // 10个线程同时去竞争锁
                     countDownLatch.await();
-                    DistributedLock lock = new DistributedLock();
+                    ExclusiveLock lock = new ExclusiveLock();
                     lock.lock();
                     lock.unlock();
                 } catch (IOException e) {

@@ -13,12 +13,12 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
 /**
- * 分布式锁的实现
+ * 分布式独享锁的实现
  *
  * @author dark
  * @date 2019-07-11
  */
-public class DistributedLock implements Lock, Watcher {
+public class ExclusiveLock implements Lock, Watcher {
 
     private ZooKeeper zooKeeper;
 
@@ -28,12 +28,12 @@ public class DistributedLock implements Lock, Watcher {
 
     private CountDownLatch countDownLatch; // 实现线程等待的计数器
 
-    public DistributedLock() throws IOException, KeeperException, InterruptedException {
+    public ExclusiveLock() throws IOException, KeeperException, InterruptedException {
         zooKeeper = new ZooKeeper("192.168.0.106,192.168.0.108,192.168.0.109",
                 5000, this);
 
         // 这里存在并发创建根节点问题，需要同步
-        synchronized (DistributedLock.class) {
+        synchronized (ExclusiveLock.class) {
             Stat stat = zooKeeper.exists(LOCKS, false);
             if (stat == null) {
                 zooKeeper.create(LOCKS, "0".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);

@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class AbstractLB implements ILB {
 
     /**
-     * 负载均衡，采用模板模式的思想，该方法只是抽离出公共的代码，
+     * 负载均衡，采用模板模式的思想提高扩展性，该方法只是抽离出公共的代码，
      * 具体的算法由doSelect方法实现
      *
      * @param hosts
