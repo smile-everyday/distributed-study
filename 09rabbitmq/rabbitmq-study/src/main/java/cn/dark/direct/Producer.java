@@ -1,6 +1,7 @@
-package cn.dark.basic;
+package cn.dark.direct;
 
 import cn.dark.utils.ConnectionUtils;
+import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 
@@ -13,15 +14,21 @@ import java.util.concurrent.TimeoutException;
  */
 public class Producer {
 
-    private static final String QUEUE_NAME = "myQueue";
+    private static final String QUEUE_NAME = "direct queue";
+    private static final String EXCHANGE_NAME = "exchange queue";
 
     public static void main(String[] args) throws IOException, TimeoutException {
         try (Connection connection = ConnectionUtils.getConnection("192.168.0.106", 5672, "lwj", "lwj");
              Channel channel = connection.createChannel()) {
+            // 声明直连类型的交换机
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT);
             // 参数含义：1. 队列名称 2. 是否持久化 3. 该队列是否仅对首次声明它的连接可见 4. 是否自动删除 5. 队列参数
             channel.queueDeclare(QUEUE_NAME, false, false, false, null);
-            // 发送到直连类型的amqp default exchange，只要有队列名字和routing key相同就能收到消息
-            channel.basicPublish("", QUEUE_NAME, null, "Hello, world!".getBytes());
+            // 绑定交换机和队列，并指定routingKey
+            channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, "direct");
+
+            // 发送消息，只有routingKey为direct的队列才能接收到这条消息
+            channel.basicPublish(EXCHANGE_NAME, "direct", null, "Hello, world!".getBytes());
         } catch (TimeoutException e) {
             e.printStackTrace();
         } catch (IOException e) {
