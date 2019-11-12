@@ -33,7 +33,7 @@ public class Producer2 {
             // 指定备份交换机
             // 如果备份交换机不存在，消息丢失，没有异常
             // 如果备份交换机未绑定队列，消息丢失，没有异常
-            // 如果本分交换机没有匹配到任何队列，消息丢失，没有异常
+            // 如果备份交换机没有匹配到任何队列，消息丢失，没有异常
             Map<String, Object> arguments = new HashMap<>();
             arguments.put("alternate-exchange", ALTERNATE_EXCHANGE);
             channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.DIRECT, false, false, arguments);

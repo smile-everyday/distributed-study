@@ -40,10 +40,10 @@ public class Producer1 {
             channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, "");
 
             for (int i = 0; i < 10; i++) {
-                Thread.sleep(1000);
-
                 // 将mandatory设置为true，当未能成功路由到队列时，会触发监听器
                 channel.basicPublish(EXCHANGE_NAME, "test mandatory", true, null, (i + "").getBytes());
+
+                Thread.sleep(1000);
             }
         } catch (Exception e) {
             e.printStackTrace();

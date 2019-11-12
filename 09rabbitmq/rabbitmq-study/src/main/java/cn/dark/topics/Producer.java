@@ -21,7 +21,7 @@ public class Producer {
              Channel channel =connection.createChannel()) {
             // 创建一个fanout类型的交换机
             channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);
-            String[] routingKeys = {"small.black.dog", "small.black.pig", "big.fat.black.pig"};
+                String[] routingKeys = {"small.black.dog", "small.black.pig", "big.fat.black.pig"};
             for (int i = 0; i < routingKeys.length; i++) {
                 // fanout类型交换机不需要指定routing key，所有绑定该交换机的队列都可以接收到消息
                 channel.basicPublish(EXCHANGE_NAME, routingKeys[i], null, ("hello, " + i).getBytes());
